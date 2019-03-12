@@ -7,6 +7,8 @@ const graphQlResolver = require('./graphql/resolvers/index.js');
 const isAuth = require('./middleware/is-auth');
 const app = express();
 
+require('dotenv').config();
+
 //use bodyParser.json() if not on most current version of express
 app.use(express.json());
 
