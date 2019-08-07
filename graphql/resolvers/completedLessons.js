@@ -3,14 +3,19 @@ const CompletedLesson = require('../../models/completedLesson.js')
 const Question = require('../../models/question.js')
 const CompletedQuestion = require('../../models/completedQuestion.js')
 const { transformLesson, transformCompletedLesson, transformQuestion, transformCompletedQuestion } = require('./merge.js')
+const {ObjectId} = require('mongodb');
 
 module.exports = {
   completedLessons: async (args, req) => {
-    if (!req.isAuth){
-      throw new Error('Unauthenticated')
-    }
+    // if (!req.isAuth){
+    //   throw new Error('Unauthenticated')
+    // }
     try{
-      const completedLessons = await CompletedLesson.find()
+      let findObj = {}
+      args.userID ? findObj.user = ObjectId(args.userID) : null
+      
+      const completedLessons = await CompletedLesson.find(findObj)
+      
       return completedLessons.map(completedLesson => {
         return transformCompletedLesson(completedLesson)
       })
@@ -43,7 +48,7 @@ module.exports = {
         user: args.userId,
         lesson: fetchedLesson,
         score: args.score,
-        questionData: questionData//questionData
+        questionData: questionData
       })    
       let savedCompleteLesson = await completeLesson.save()      
       
